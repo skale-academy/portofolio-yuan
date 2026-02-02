@@ -1,0 +1,727 @@
+<!-- 
+  DOCTYPE html: Memberitahu browser bahwa ini adalah dokumen HTML5 standar.
+  Ini penting agar browser merender halaman dengan mode standar, bukan 'quirks mode' (mode jadul).
+-->
+<!DOCTYPE html>
+<html lang="en"> <!-- Atribut lang="en" membantu mesin pencari dan screen reader mengetahui bahasa konten (Inggris) -->
+<head>
+    <!-- 
+      Meta Charset: Mengatur encoding karakter ke UTF-8. 
+      Ini penting agar simbol-simbol khusus dan emoji bisa muncul dengan benar.
+    -->
+    <meta charset="UTF-8">
+    
+    <!-- 
+      Viewport Meta Tag: SANGAT PENTING untuk Responsiveness.
+      width=device-width: Mengatur lebar website mengikuti lebar layar perangkat (HP/Laptop).
+      initial-scale=1.0: Mengatur tingkat zoom awal ke 100%.
+      Tanpa ini, tampilan di HP akan terlihat seperti versi desktop yang diperkecil (kecil sekali).
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Cozydiadora - Product Designer</title>
+    
+    <!-- 
+      Mengambil Font dari Google Fonts.
+      preconnect: Memberitahu browser untuk segera membuat koneksi ke server font Google agar loading lebih cepat.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Memanggil font "Plus Jakarta Sans" dengan berbagai ketebalan (400=regular, 700=bold, dll) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- 
+      Mengambil Icon Library (FontAwesome).
+      Kita menggunakan CDN (Content Delivery Network) agar tidak perlu download file icon secara manual.
+    -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CSS VARIABLES (:root) ---
+           Kita menyimpan nilai warna, font, dan ukuran di sini.
+           Kenapa? Agar jika ingin ganti tema (misal: warna biru jadi merah), 
+           kita cukup ubah di sini, tidak perlu mencari satu-satu di seluruh kode.
+        */
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif; /* Font utama */
+            --color-bg: #FFFFFF; /* Warna background utama */
+            --color-text: #111111; /* Warna teks utama (hampir hitam) */
+            --color-text-light: #666666; /* Warna teks sekunder (abu-abu) */
+            --color-accent-teal: #169E96; /* Warna hijau tosca untuk aksen */
+            --color-accent-purple: #8B5CF6; /* Warna ungu untuk kartu brand */
+            --color-card-bg: #F5F5F5; /* Warna background kartu/box */
+            --color-badge-bg: #E0F2F1; /* Background badge "Available" */
+            --color-badge-text: #00695C; /* Teks badge "Available" */
+            
+            /* Menyimpan ukuran radius sudut agar konsisten di seluruh website */
+            --radius-large: 32px; 
+            --radius-medium: 20px;
+            --radius-small: 12px;
+            
+            /* Efek bayangan halus */
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
+        }
+
+        /* --- CSS RESET ---
+           Secara default, browser punya margin/padding bawaan. 
+           Kode ini menghapus semuanya agar kita bisa mengatur layout dari nol dengan presisi.
+           box-sizing: border-box; memastikan padding tidak menambah lebar elemen.
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main); /* Menggunakan variabel font */
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.5; /* Jarak antar baris teks agar enak dibaca */
+            overflow-x: hidden; /* Mencegah scroll horizontal yang tidak diinginkan */
+        }
+
+        /* Styling umum untuk Link, List, dan Gambar */
+        a { text-decoration: none; color: inherit; transition: 0.3s; } /* Menghilangkan garis bawah link */
+        ul { list-style: none; } /* Menghilangkan titik bullet pada list */
+        img { max-width: 100%; display: block; } /* Memastikan gambar responsif dan tidak keluar batas */
+
+        /* --- UTILITY CLASS: CONTAINER ---
+           Membatasi lebar konten agar tidak terlalu melebar di layar besar (monitor wide).
+           Juga memberi padding kiri-kanan agar konten tidak nempel ke pinggir layar HP.
+        */
+        .container {
+            max-width: 1280px; /* Lebar maksimal konten */
+            margin: 0 auto; /* Posisi tengah (auto kiri-kanan) */
+            padding: 0 24px; /* Jarak aman di sisi kiri dan kanan */
+        }
+
+        /* --- NAVBAR ---
+           position: sticky; membuat navbar menempel di atas saat discroll.
+           backdrop-filter: blur; memberikan efek kaca buram di belakang navbar.
+        */
+        header {
+            padding: 24px 0;
+            position: sticky; 
+            top: 0;
+            background: rgba(255, 255, 255, 0.9); /* Putih transparan */
+            backdrop-filter: blur(10px); /* Efek blur a la iOS/MacOS */
+            z-index: 1000; /* Memastikan navbar selalu di atas elemen lain */
+        }
+
+        nav {
+            display: flex; /* Menggunakan Flexbox untuk menata logo, link, dan tombol sejajar */
+            justify-content: space-between; /* Membuat jarak otomatis: Logo dikiri, tombol dikanan */
+            align-items: center; /* Menengahkan elemen secara vertikal */
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex; /* Flexbox juga dipakai di dalam elemen kecil untuk meratakan ikon & teks */
+            align-items: center;
+            gap: 8px; /* Jarak antara lingkaran 'C' dan teks 'COZYDIADORA' */
+        }
+        
+        .logo span {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: #111;
+            color: #fff;
+            border-radius: 50%; /* Membuat kotak menjadi lingkaran sempurna */
+            text-align: center;
+            line-height: 24px; /* Cara cepat menengahkan teks vertikal jika tinggi baris = tinggi elemen */
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px; /* Jarak antar menu */
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--color-text-light);
+        }
+
+        .nav-links a:hover { color: var(--color-text); } /* Efek hover berubah warna jadi hitam */
+
+        .btn-black {
+            background-color: #111;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 50px; /* Membuat tombol berbentuk kapsul (pill shape) */
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        
+        .btn-black:hover { transform: translateY(-2px); opacity: 0.9; } /* Efek naik sedikit saat dihover */
+
+        /* --- HERO SECTION ---
+           Ini adalah bagian utama tampilan.
+        */
+        .hero {
+            padding: 60px 0 100px;
+        }
+
+        /* GRID SYSTEM:
+           display: grid; sangat powerful untuk layout 2 dimensi.
+           grid-template-columns: 1fr 1.1fr; membagi layar jadi 2 kolom.
+           Kolom kiri (teks) dapat 1 bagian, kolom kanan (gambar) dapat 1.1 bagian (sedikit lebih lebar).
+        */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr; 
+            gap: 60px; /* Jarak antar kolom */
+            align-items: center;
+        }
+
+        /* Bagian Kiri: Teks Hero */
+        .hero-content {
+            display: flex;
+            flex-direction: column; /* Menyusun elemen dari atas ke bawah */
+            align-items: flex-start; /* Rata kiri */
+        }
+
+        /* Badge "Available for work" */
+        .status-badge {
+            display: inline-flex; /* Agar lebar badge menyesuaikan konten */
+            align-items: center;
+            gap: 8px;
+            background-color: var(--color-badge-bg);
+            color: var(--color-badge-text);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px; /* Menambah jarak antar huruf agar lebih mudah dibaca */
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #009688;
+            border-radius: 50%; /* Membuat titik bulat */
+        }
+
+        h1 {
+            font-size: 5rem; /* Ukuran font sangat besar untuk dampak visual */
+            font-weight: 800;
+            line-height: 0.95; /* Line height < 1 membuat teks baris atas dan bawah lebih rapat (modern look) */
+            letter-spacing: -2px; /* Mengurangi jarak antar huruf (tight tracking) */
+            margin-bottom: 24px;
+            color: #111;
+        }
+        
+        h1 span { font-weight: 400; font-size: 2rem; vertical-align: top; } /* Simbol copyright kecil di atas */
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--color-text-light);
+            max-width: 400px; /* Membatasi panjang teks agar tidak terlalu lebar kesamping (susah dibaca) */
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        /* Bagian Kanan: Bento Grid (Visuals)
+           Menyusun kotak-kotak agar terlihat seperti kotak bekal (Bento box).
+        */
+        .hero-visuals {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-card {
+            background-color: var(--color-card-bg);
+            border-radius: var(--radius-large);
+            padding: 24px;
+            display: flex;
+            justify-content: space-between; /* Teks di kiri, Foto di kanan */
+            align-items: center;
+            position: relative;
+            overflow: hidden; /* Mencegah konten keluar dari lengkungan border-radius */
+        }
+
+        .profile-info {
+            z-index: 2; /* Memastikan teks ada di atas layer background jika ada */
+        }
+        
+        .profile-info h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .profile-info p { font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 20px; }
+        
+        .tag-framer {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Bayangan halus agar terlihat 'melayang' */
+            margin-bottom: 12px;
+        }
+
+        .rate-tag {
+            background: #E3F2FD;
+            color: #1565C0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .profile-image-container {
+            width: 220px;
+            height: 220px;
+            border-radius: var(--radius-medium);
+            overflow: hidden; /* Crop gambar agar sesuai bentuk container */
+            position: relative;
+        }
+        
+        /* Object-fit cover: SANGAT PENTING untuk gambar. 
+           Memastikan gambar memenuhi kotak tanpa terdistorsi/gepeng (seperti background-size: cover) */
+        .profile-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Grid bawah (Kotak Brand Ungu & Kotak Sosmed) */
+        .bottom-visuals {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Kolom kiri 2 bagian (lebih lebar), kolom kanan 1 bagian */
+            gap: 20px;
+        }
+
+        .brands-card {
+            background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%); /* Gradasi ungu diagonal */
+            border-radius: var(--radius-large);
+            padding: 24px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Mendorong teks ke atas dan logo ke bawah */
+        }
+
+        .brands-card p {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .brand-logos {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap; /* Jika logo kebanyakan, akan turun ke baris baru */
+        }
+        
+        .brand-logos i { font-size: 1.5rem; opacity: 0.8; }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 kolom sama lebar */
+            gap: 12px;
+        }
+
+        .social-btn {
+            background: white;
+            border-radius: 16px; /* Bentuk 'Squircle' (antara kotak dan lingkaran) */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1; /* PENTING: Memastikan lebar dan tinggi selalu sama (kotak sempurna) */
+            font-size: 1.2rem;
+            color: #333;
+            border: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .social-btn:hover { border-color: #111; color: #111; }
+        .social-btn.primary { color: #E91E63; } 
+        .social-btn.blue { color: #0077B5; }
+
+        /* --- MISSION STRIP --- */
+        .mission-section {
+            background-color: var(--color-accent-teal);
+            padding: 60px 0;
+            color: white;
+            margin: 0 24px; /* Memberi margin kiri-kanan agar tidak full layar */
+            border-radius: var(--radius-large) var(--radius-large) 0 0; /* Hanya membulatkan sudut atas kiri & kanan */
+        }
+        
+        .mission-content h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* --- SERVICES SECTION --- */
+        .section { padding: 100px 0; }
+        .section-header { margin-bottom: 60px; }
+        .section-title { font-size: 3rem; font-weight: 700; margin-bottom: 16px; }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Otomatis membuat 3 kolom sama rata */
+            gap: 24px;
+        }
+
+        .service-card {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 40px;
+            border-radius: var(--radius-large);
+            transition: 0.3s; /* Animasi halus untuk hover */
+        }
+
+        .service-card:hover {
+            border-color: #111;
+            transform: translateY(-5px); /* Efek naik ke atas saat dihover */
+            box-shadow: var(--shadow-soft);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: #F5F5F5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .service-card h3 { font-size: 1.5rem; margin-bottom: 12px; }
+        .service-card p { color: var(--color-text-light); }
+
+        /* --- PROJECTS SECTION --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .project-card {
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            background: #f0f0f0;
+            position: relative; /* Penting agar .project-info bisa diposisikan absolute relatif terhadap kartu ini */
+            aspect-ratio: 4/3; /* Mengunci rasio gambar 4:3 */
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s; /* Animasi zoom lambat */
+        }
+
+        .project-card:hover img { transform: scale(1.05); } /* Zoom in gambar saat hover */
+
+        .project-info {
+            position: absolute; /* Melayang di atas gambar */
+            bottom: 24px; /* Jarak dari bawah kartu */
+            left: 24px;   /* Jarak dari kiri kartu */
+            background: white;
+            padding: 16px 24px;
+            border-radius: 50px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #111;
+            color: #fff;
+            padding: 80px 0 40px;
+            border-radius: var(--radius-large) var(--radius-large) 0 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h2 { font-size: 2rem; margin-bottom: 8px; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: #888; }
+        .footer-links a:hover { color: #fff; }
+
+        .footer-bottom {
+            border-top: 1px solid #333; /* Garis pemisah tipis */
+            padding-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE DESIGN (Media Queries) ---
+           Bagian ini mengubah layout saat dibuka di HP atau Tablet.
+        */
+        @media (max-width: 900px) { /* Jika layar kurang dari 900px (Tablet/HP) */
+            .hero-grid { grid-template-columns: 1fr; } /* Hero jadi 1 kolom (tumpuk ke bawah) */
+            h1 { font-size: 3.5rem; } /* Ukuran font judul diperkecil */
+            .services-grid { grid-template-columns: 1fr; } /* Service jadi 1 kolom */
+            .projects-grid { grid-template-columns: 1fr; } /* Project jadi 1 kolom */
+            
+            .nav-links { display: none; } /* Menyembunyikan menu link di mobile (biasanya diganti hamburger menu) */
+            .logo { z-index: 1001; }
+        }
+        
+        @media (max-width: 600px) { /* Jika layar kurang dari 600px (HP Kecil) */
+             h1 { font-size: 2.8rem; }
+            .bottom-visuals { grid-template-columns: 1fr; } /* Grid bento bawah ditumpuk */
+            .social-grid { display: flex; gap: 10px; justify-content: space-between; } /* Icon sosmed jadi baris horizontal */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+      Header & Navbar
+      Menggunakan tag semantik <header> dan <nav> agar struktur dokumen jelas.
+    -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <span>C</span> COZYDIADORA
+                </a>
+                
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#projects">Work</a>
+                    <a href="#services">Services</a>
+                </div>
+
+                <a href="#contact" class="btn-black">Book a call</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 
+      HERO SECTION
+      Bagian pertama yang dilihat user.
+    -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                
+                <!-- Hero Left: Konten Teks -->
+                <div class="hero-content">
+                    <div class="status-badge">
+                        <span class="status-dot"></span> AVAILABLE FOR WORK
+                    </div>
+                    
+                    <!-- <span>©</span> digunakan untuk simbol copyright kecil -->
+                    <h1>Hi, I’m a product designer<span>©</span></h1>
+                    
+                    <p class="hero-desc">
+                        I have 11 years of experience working on useful and mindful products together with startups and known brands.
+                    </p>
+                    
+                    <a href="#contact" class="btn-black">Contact Us</a>
+                </div>
+
+                <!-- Hero Right: Bento Grid Visuals -->
+                <div class="hero-visuals">
+                    
+                    <!-- Kartu Profil -->
+                    <div class="profile-card">
+                        <div class="profile-info">
+                            <h3>Cozydiadora</h3>
+                            <p>Jakarta, Indonesia</p>
+                            
+                            <div class="tag-framer">
+                                <i class="fa-solid fa-bolt"></i> FRAMER EXPERT
+                            </div>
+                            <br>
+                            <div class="rate-tag">
+                                $150 - $300/HR
+                            </div>
+                        </div>
+                        <div class="profile-image-container">
+                            <!-- Menggunakan gambar dari Unsplash -->
+                            <img src="https://images.unsplash.com/photo-1542596594-649edbc13630?q=80&w=300&auto=format&fit=crop" alt="Profile">
+                        </div>
+                    </div>
+
+                    <!-- Kartu Bawah: Brand & Sosmed -->
+                    <div class="bottom-visuals">
+                        <!-- Kartu Ungu (Brand Logos) -->
+                        <div class="brands-card">
+                            <p>The most recent brands I happily worked with <3</p>
+                            <div class="brand-logos">
+                                <!-- Menggunakan FontAwesome Brands (fa-brands) -->
+                                <i class="fa-brands fa-squarespace"></i>
+                                <i class="fa-brands fa-asana"></i>
+                                <i class="fa-brands fa-atlassian"></i>
+                            </div>
+                        </div>
+
+                        <!-- Grid Tombol Sosmed -->
+                        <div class="social-grid">
+                            <div class="social-btn" style="color:#F24E1E"><i class="fa-brands fa-figma"></i></div>
+                            <div class="social-btn blue"><i class="fa-brands fa-linkedin-in"></i></div>
+                            <div class="social-btn" style="color:#ea4c89"><i class="fa-brands fa-dribbble"></i></div>
+                            <div class="social-btn" style="color:#E60023"><i class="fa-brands fa-pinterest"></i></div>
+                            <div class="social-btn" style="color:#1769ff"><i class="fa-brands fa-behance"></i></div>
+                            <div class="social-btn"><i class="fa-brands fa-x-twitter"></i></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION STRIP -->
+    <div class="container">
+        <section class="mission-section">
+            <div class="mission-content">
+                <h2>My mission is to assist startups and enterprises in creating useful and impactful products.</h2>
+            </div>
+        </section>
+    </div>
+
+    <!-- SERVICES SECTION -->
+    <section id="services" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Services</h2>
+                <p>Tailored design solutions to elevate your brand.</p>
+            </div>
+            
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                    <h3>UI/UX Design</h3>
+                    <p>Crafting intuitive and aesthetically pleasing interfaces for web and mobile applications.</p>
+                </div>
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3>Design Systems</h3>
+                    <p>Building scalable component libraries to ensure consistency across your products.</p>
+                </div>
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-code"></i></div>
+                    <h3>Framer Dev</h3>
+                    <p>Turning designs into interactive, high-performance websites using Framer.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="projects" class="section" style="background: #FAFAFA;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Selected Works</h2>
+            </div>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1609921212029-bb5a28e60960?q=80&w=800&auto=format&fit=crop" alt="Project 1">
+                    <div class="project-info">
+                        <strong>Fintech App</strong>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=800&auto=format&fit=crop" alt="Project 2">
+                    <div class="project-info">
+                        <strong>E-Commerce Dashboard</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2>Let's work together.</h2>
+                    <p>hello@cozydiadora.com</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#">LinkedIn</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">Instagram</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Cozydiadora. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT NATIVE -->
+    <script>
+        // --- 1. SMOOTH SCROLLING ---
+        // Mencari semua elemen <a> yang href-nya dimulai dengan '#' (link internal halaman)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            // Menambahkan event listener 'click' pada setiap link tersebut
+            anchor.addEventListener('click', function (e) {
+                // e.preventDefault() mencegah perilaku default link (yang biasanya langsung loncat kasar)
+                e.preventDefault();
+                
+                // Mengambil nilai href (misal: #contact)
+                const targetId = this.getAttribute('href');
+                
+                // Jika href cuma '#' saja, hentikan fungsi (return)
+                if(targetId === '#') return;
+                
+                // Mencari elemen tujuan berdasarkan ID-nya
+                const targetElement = document.querySelector(targetId);
+                
+                // Jika elemen tujuan ditemukan, lakukan scroll
+                if(targetElement){
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth' // Kunci animasi scroll yang halus
+                    });
+                }
+            });
+        });
+
+        // --- 2. STICKY NAVBAR EFFECT ---
+        // Menambahkan event listener saat window discroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            
+            // Jika posisi scroll lebih dari 50px dari atas (user sudah mulai scroll ke bawah)
+            if (window.scrollY > 50) {
+                // Tambahkan bayangan dan pertebal background putih
+                header.style.boxShadow = "0 4px 20px rgba(0,0,0,0.05)";
+                header.style.background = "rgba(255, 255, 255, 0.95)";
+            } else {
+                // Jika kembali ke paling atas, hilangkan bayangan
+                header.style.boxShadow = "none";
+                header.style.background = "rgba(255, 255, 255, 0.9)";
+            }
+        });
+
+        // Log sederhana untuk memastikan JS berjalan
+        console.log("Website Loaded - Cozydiadora Concept");
+    </script>
+</body>
+</html>
